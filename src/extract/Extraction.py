@@ -33,3 +33,16 @@ def get_api_data(league_code: str, filter: dict = None) -> json:
 
     response.raise_for_status()
     return response.json()
+
+def store_data(data: json) -> None:
+    """
+    Saves Json data to a dedicated folder\n
+    PARAMETERS:\n
+    \tdata: json
+    """
+    file_name = f"{datetime.now().strftime("%Y-%m-%d")}.json"
+    file_path = f"{OUTPUT_DIR}/{file_name}"
+    os.makedirs(OUTPUT_DIR, exist_ok = True)
+
+    with open(file_path, "w", encoding = "utf-8") as file:
+        json.dump(data, file, indent=4)
