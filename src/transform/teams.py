@@ -3,7 +3,6 @@ from pyspark.sql.functions import col
 from delta.tables import DeltaTable
 
 def transform_teams(spark: SparkSession, matches_data, output_path):
-    table_path = str(output_path) + "teams"
     
     home_teams = matches_data.select(
         col("match.homeTeam.id").alias("team_id"),
@@ -23,13 +22,13 @@ def transform_teams(spark: SparkSession, matches_data, output_path):
     
     new_teams = home_teams.union(away_teams).dropDuplicates(["team_id"])
     
-    if DeltaTable.isDeltaTable(spark, table_path):
+    if DeltaTable.isDeltaTable(spark, output_path):
 
-        existing_table = DeltaTable.forPath(spark, table_path)
+        existing_table = DeltaTable.forPath(spark, output_path)
 
         existing_table.alias("old") \
             .merge(new_teams.alias("new"), "old.team_id = new.team_id") \
             .whenNotMatchedInsertAll() \
             .execute()
     else:
-        new_teams.write.format("delta").mode("overwrite").save(table_path)
+        new_teams.write.format("delta").mode("overwrite").save(output_path)
