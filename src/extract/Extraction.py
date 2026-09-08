@@ -9,8 +9,9 @@ load_dotenv()
 
 API_KEY = os.environ["FOOTBALL_API_KEY"]
 BASE_URL = "https://api.football-data.org/v4"
-HEADERS = {"X-Auth-Token": API_KEY, "X-Unfold-Goals": "true"}
-OUTPUT_DIR = os.path("data/Bronze")
+HEADERS = {"X-Auth-Token": API_KEY}
+OUTPUT_DIR = "data/Bronze"
+
 
 def get_api_data(league_code: str, filter: dict = None) -> json:
     """
@@ -46,3 +47,18 @@ def store_data(data: json) -> None:
 
     with open(file_path, "w", encoding = "utf-8") as file:
         json.dump(data, file, indent=4)
+
+
+def run_extraction(league_code):
+    # rolling window filter 7 days forward, 7 days before
+    today = datetime.now().date()
+    start_date = (today - timedelta(days=7)).strftime("%Y-%m-%d")
+    end_date = (today + timedelta(days=7)).strftime("%Y-%m-%d")
+
+    window = {
+        "dateFrom" : start_date,
+        "dateTo" : end_date,
+    }
+
+    data = get_api_data(league_code, window)
+    store_data(data)
