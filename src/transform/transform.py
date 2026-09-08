@@ -1,6 +1,4 @@
-import glob
-import os
-import sys
+import sys, os, glob
 from pathlib import Path
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, explode
@@ -10,15 +8,12 @@ from src.transform.matches import transform_matches
 
 os.environ["HADOOP_HOME"] = r"C:\hadoop"
 sys.path.append(r"C:\hadoop\bin")
-BRONZE_PATH = Path("data/Bronze")
-SILVER_TEAMS_PATH = Path("data/Silver/season_league_code/teams")
-SILVER_MATCHES_PATH = Path("data/Silver/matches")
-os.environ["PYSPARK_SUBMIT_ARGS"] = "--conf spark.driver.extraJavaOptions=-Divy.log=error --packages io.delta:delta-spark_2.13:4.4.0 pyspark-shell"
+BRONZE_PATH = "data/Bronze"
 
 
-def get_recent_data(path: Path):
+def get_recent_data(path: str):
     """
-    Takes the most recent added file, uses alphabetical ordering\n
+    Takes the most recent added file, uses alphabetical/date ordering\n
     PARAMETERS:\n
     \tpath: Path\n
     RETURN -> most recent file in path
@@ -45,7 +40,7 @@ def is_matchday_one(match_data) -> bool:
         .count() > 0)
 
 
-def process_file(spark, bronze_file) -> None:
+def process_file(spark, bronze_file, season, league_code) -> None:
     """
     Processes a file, using spark to extract match data,
     transforms the matches from the match data and if
@@ -62,16 +57,16 @@ def process_file(spark, bronze_file) -> None:
     raw_data = spark.read.option("multiLine", True).json(str(bronze_file))
     matches = raw_data.select(explode(col("matches")).alias("match"))
 
-    transform_matches(spark, matches, SILVER_MATCHES_PATH)
+    transform_matches(spark, matches, season, league_code)
 
     if is_matchday_one(matches):
             print("Matchday 1 detected")
             print("Adding new teams...")
 
-            transform_teams(spark, matches, SILVER_TEAMS_PATH)
+            transform_teams(spark, matches, season, league_code)
 
 
-def main():
+def run_transformation(season, code):
     spark = SparkSession.builder \
         .appName("Transformations") \
         .master("local[*]") \
@@ -80,9 +75,7 @@ def main():
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
         .getOrCreate()
 
-    file = get_recent_data(BRONZE_PATH)
-    process_file(spark, file)
+    recent_raw = get_recent_data(BRONZE_PATH)
+    process_file(spark, recent_raw, season, code)
 
     spark.stop()
-
-main()
