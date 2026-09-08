@@ -3,7 +3,8 @@ from pyspark.sql import SparkSession
 from delta.tables import DeltaTable
 from pyspark.sql.functions import col, to_timestamp, to_date, date_format, when
 
-def transform_matches(spark: SparkSession, matches_data, output_path):
+def transform_matches(spark: SparkSession, matches_data, season, league_code):
+    output_path = f"data/Silver/{season}_{league_code}/matches"
 
     matches = matches_data.select(
         col("match.id").alias("match_id"),
