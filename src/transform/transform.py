@@ -6,8 +6,10 @@ from pyspark.sql.functions import col, explode
 from src.transform.teams import transform_teams
 from src.transform.matches import transform_matches
 
-os.environ["HADOOP_HOME"] = r"C:\hadoop"
-sys.path.append(r"C:\hadoop\bin")
+if os.name == "nt":
+    os.environ["HADOOP_HOME"] = r"C:\hadoop"
+    sys.path.append(r"C:\hadoop\bin")
+
 BRONZE_PATH = "data/Bronze"
 
 
