@@ -1,0 +1,13 @@
+services:
+  football-etl:
+    build: .
+    container_name: football-etl
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./data:/app/data
+      - spark-ivy:/root/.ivy2
+volumes:
+  spark-ivy:
