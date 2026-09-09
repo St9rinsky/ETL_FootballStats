@@ -41,7 +41,7 @@ def store_data(data: json) -> None:
     PARAMETERS:\n
     \tdata: json
     """
-    file_name = f"{datetime.now().strftime("%Y-%m-%d")}.json"
+    file_name = f"{datetime.now().strftime('%Y-%m-%d')}.json"
     file_path = f"{OUTPUT_DIR}/{file_name}"
     os.makedirs(OUTPUT_DIR, exist_ok = True)
 
