@@ -13,28 +13,16 @@ if os.name == "nt":
 BRONZE_PATH = "data/Bronze"
 
 
-def get_recent_data(path: str):
-    """
-    Takes the most recent added file, uses alphabetical/date ordering\n
-    PARAMETERS:\n
-    \tpath: Path\n
-    RETURN -> most recent file in path
-
-    RAISES:\n
-    \tFileNotFoundError : when no files exist
-
-    """
-    files = glob.glob(f"{path}/*.json")
+def get_recent_data(path):
+    files = [Path(file) for file in glob.glob(f"{path}/*.json")]
 
     if not files:
-        raise FileNotFoundError (f"No json files exist in {path}")
-    return max(files)
+        raise FileNotFoundError(f"No json files exist in {path}")
+
+    return max(files, key=lambda file: file.stat().st_mtime)
 
 
-def is_matchday_one(match_data) -> bool:
-    """
-    check if match data contains matchday one games
-    """
+def is_matchday_one(match_data):
     return (
         match_data
         .filter(col("match.matchday") == 1)
@@ -42,17 +30,7 @@ def is_matchday_one(match_data) -> bool:
         .count() > 0)
 
 
-def process_file(spark, bronze_file, season, league_code) -> None:
-    """
-    Processes a file, using spark to extract match data,
-    transforms the matches from the match data and if
-    the matches contain matches for matchday one, new teams get
-    data gets processed
-
-    PARAMETERS:\n
-    \tspark : SparkSession
-    \tbronze_file : str
-    """
+def process_file(spark, bronze_file, season, league_code):
 
     print(f"Processing: {bronze_file}")
 
