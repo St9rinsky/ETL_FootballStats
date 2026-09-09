@@ -14,9 +14,9 @@ OUTPUT_DIR = "data/Bronze"
 
 def full_load_exists(season, league_code):
 
-    bronze_path = Path(f"data/Bronze/{season}_{league_code}")
+    bronze_path = Path(f"data/Bronze")
 
-    return any(bronze_path.glob("full_load.json"))
+    return any(bronze_path.glob("*_full_load.json"))
 
 
 def get_api_data(league_code, filter):
