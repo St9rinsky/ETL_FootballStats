@@ -1,0 +1,16 @@
+{
+    "api_settings": {
+        "base_url": "https://api.football-data.org/v4"
+    },
+
+    "data_to_fetch": {
+        "competition_code": "PL",
+        "season": "26/27"
+    },
+
+    "dirs":{
+        "bronze_path": "data/Bronze",
+        "silver_teams_path": "data/Silver/season_league_code/teams",
+        "silver_matches_path": "data/Silver/season_league_code/marches"
+    }
+}

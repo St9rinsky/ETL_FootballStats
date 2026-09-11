@@ -3,8 +3,8 @@ from pathlib import Path
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, explode
 
-from src.transform.teams import transform_teams
-from src.transform.matches import transform_matches
+from transform.silver.teams import transform_teams
+from transform.silver.matches import transform_matches
 
 if os.name == "nt":
     os.environ["HADOOP_HOME"] = r"C:\hadoop"

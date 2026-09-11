@@ -1,7 +1,7 @@
 import json
 
 from src.extract.Extraction import run_extraction
-from src.transform.transform import run_transformation
+from transform.silver.transform import run_transformation
 
 
 def main():
