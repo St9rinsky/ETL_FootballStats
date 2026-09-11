@@ -1,9 +1,7 @@
-from pathlib import Path
-from pyspark.sql import SparkSession
 from delta.tables import DeltaTable
-from pyspark.sql.functions import col, to_timestamp, to_date, date_format, when
+from pyspark.sql.functions import col, to_timestamp, date_format, when
 
-def transform_matches(spark: SparkSession, matches_data, season, league_code):
+def transform_matches(spark, matches_data, season, league_code):
     output_path = f"data/Silver/{season}_{league_code}/matches"
 
     matches = matches_data.select(

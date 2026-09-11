@@ -1,8 +1,7 @@
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import col
 from delta.tables import DeltaTable
 
-def transform_teams(spark: SparkSession, matches_data, season, league_code):
+def transform_teams(spark, matches_data, season, league_code):
     output_path = f"data/Silver/{season}_{league_code}/teams"
     home_teams = matches_data.select(
         col("match.homeTeam.id").alias("team_id"),

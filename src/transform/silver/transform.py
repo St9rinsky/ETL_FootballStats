@@ -1,8 +1,8 @@
 import sys, os, glob
 from pathlib import Path
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, explode
 
+from src.spark.session import spark
 from transform.silver.teams import transform_teams
 from transform.silver.matches import transform_matches
 
@@ -31,7 +31,6 @@ def is_matchday_one(match_data):
 
 
 def process_file(spark, bronze_file, season, league_code):
-
     print(f"Processing: {bronze_file}")
 
     raw_data = spark.read.option("multiLine", True).json(str(bronze_file))
@@ -47,14 +46,6 @@ def process_file(spark, bronze_file, season, league_code):
 
 
 def run_transformation(season, code):
-    spark = SparkSession.builder \
-        .appName("Transformations") \
-        .master("local[*]") \
-        .config("spark.jars.packages", "io.delta:delta-spark_2.13:4.4.0") \
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog") \
-        .getOrCreate()
-
     recent_raw = get_recent_data(BRONZE_PATH)
     process_file(spark, recent_raw, season, code)
 
