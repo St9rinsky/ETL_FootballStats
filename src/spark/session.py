@@ -1,4 +1,9 @@
+import os, sys
 from pyspark.sql import SparkSession
+
+if os.name == "nt":
+    os.environ["HADOOP_HOME"] = r"C:\hadoop"
+    sys.path.append(r"C:\hadoop\bin")
 
 spark = SparkSession.builder \
         .appName("Transformations") \

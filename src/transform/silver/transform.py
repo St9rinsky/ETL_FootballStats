@@ -1,14 +1,10 @@
-import sys, os, glob
+import glob
 from pathlib import Path
 from pyspark.sql.functions import col, explode
 
 from src.spark.session import spark
-from transform.silver.teams import transform_teams
-from transform.silver.matches import transform_matches
-
-if os.name == "nt":
-    os.environ["HADOOP_HOME"] = r"C:\hadoop"
-    sys.path.append(r"C:\hadoop\bin")
+from src.transform.silver.teams import transform_teams
+from src.transform.silver.matches import transform_matches
 
 BRONZE_PATH = "data/Bronze"
 

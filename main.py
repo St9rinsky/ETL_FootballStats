@@ -1,7 +1,8 @@
 import json
 
 from src.extract.Extraction import run_extraction
-from transform.silver.transform import run_transformation
+from src.transform.silver.transform import run_transformation
+from src.transform.gold.transform_league import run_transformations as gold_transform
 
 
 def main():
@@ -12,6 +13,8 @@ def main():
     run_extraction(season, league)
 
     run_transformation(season, league)
+
+    gold_transform()
 
 if __name__ == "__main__":
     main()
